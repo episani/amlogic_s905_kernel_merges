@@ -1,0 +1,1 @@
+cmd_drivers/amlogic/../../../hardware/amlogic/wifi/broadcom/drivers/usi/bcmdhd/built-in.o :=  rm -f drivers/amlogic/../../../hardware/amlogic/wifi/broadcom/drivers/usi/bcmdhd/built-in.o; aarch64-none-elf-ar rcsD drivers/amlogic/../../../hardware/amlogic/wifi/broadcom/drivers/usi/bcmdhd/built-in.o

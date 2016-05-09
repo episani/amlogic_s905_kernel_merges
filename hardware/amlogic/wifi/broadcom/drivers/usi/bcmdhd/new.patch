@@ -1,0 +1,88 @@
+--- dhd_sdio.c	2013-07-05 14:18:19.000000000 +0800
++++ dhd_sdio.c	2013-03-08 14:49:39.000000000 +0800
+@@ -167,16 +167,6 @@
+ DEFINE_MUTEX(_dhd_sdio_mutex_lock_);
+ #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) */
+ 
+-#ifdef _USI_NVRAM_FILE
+-typedef int (*funcptr)(void *bus, bool write, uint32 address, uint8 *data, uint size);
+-extern int ug_nvram(bcmsdh_info_t *sdh,osl_t *osh, void *nvram, int len);
+-extern int ug_fw_prepare(void *sdh, void *osh, uint8 *memptr, uint32 memlen
+-    , uint32 bus_ramsize, void *image, void **priv);
+-extern int ug_fw_download(uint8 *memptr, uint32 memlen,funcptr funcp, void *bus, void *priv, uint32 base);
+-extern int ug_fw_close(void *osh, void *priv);
+-#endif /* _USI_NVRAM_FILE */
+-
+-
+ #ifdef DHD_DEBUG
+ /* Device console log buffer state */
+ #define CONSOLE_LINE_MAX	192
+@@ -8004,10 +7994,8 @@
+ dhdsdio_download_code_file(struct dhd_bus *bus, char *pfw_path)
+ {
+ 	int bcmerror = -1;
+-#ifndef _USI_NVRAM_FILE
+ 	int offset = 0;
+ 	int len;
+-#endif /* _US_NVRAM_FILE */
+ 	void *image = NULL;
+ 	uint8 *memblock = NULL, *memptr;
+ 
+@@ -8026,33 +8014,6 @@
+ 		memptr += (DHD_SDALIGN - ((uint32)(uintptr)memblock % DHD_SDALIGN));
+ 
+ 	/* Download image */
+-#ifdef _USI_NVRAM_FILE
+-	{
+-	int ret = -1;
+-	void *priv;
+-	uint32 base = 0;
+-
+-	ret = ug_fw_prepare(bus->sdh, bus->dhd->osh, memptr, MEMBLOCK, bus->ramsize, image, &priv);
+-	if ( ret < 0 ) {
+-	    DHD_ERROR(("%s: prepare F/W fail ret=%d\n", __FUNCTION__, ret));
+-            goto err;
+-	}
+-
+-	/* check if CR4 */
+-	if (si_setcore(bus->sih, ARMCR4_CORE_ID, 0)) {
+-		/* if address is 0, store the reset instruction to be written in 0 */
+-		base = bus->dongle_ram_base;
+-		bus->resetinstr = *((uint32*)(*((uint32*)priv)));
+-	}
+-	/* int ug_fw_download(uint8 *memptr, uint32 memlen,funcptr funcp, void *bus, void *priv);*/
+-	bcmerror = ug_fw_download(memptr, MEMBLOCK, (funcptr)dhdsdio_membytes, (void *)bus, priv, base);
+-
+-	if (bcmerror < 0)
+-	    DHD_ERROR(("%s: bcmerror=%d\n", __FUNCTION__, bcmerror));
+-
+-	ret = ug_fw_close(bus->dhd->osh, priv);
+-	}
+-#else /* !_USI_NVRAM_FILE */
+ #if defined(NDISVER) && (NDISVER >= 0x0630)
+ 	while ((len = dhd_os_get_image_block((char*)memptr, MEMBLOCK, image, FALSE))) {
+ #else
+@@ -8083,7 +8044,6 @@
+ 
+ 		offset += MEMBLOCK;
+ 	}
+-#endif /* !_USI_NVRAM_FILE */
+ 
+ err:
+ 	if (memblock)
+@@ -8158,15 +8118,6 @@
+ 		ASSERT(len <= MAX_NVRAMBUF_SIZE);
+ 		memcpy(memblock, bus->nvram_params, len);
+ 	}
+-#ifdef _USI_NVRAM_FILE
+-	{
+-	int ret = 0;
+-	ret = ug_nvram(bus->sdh, bus->dhd->osh, memblock, len);
+-#ifdef DHD_DEBUG
+-	DHD_ERROR (("%s: ret=%d\n", __FUNCTION__, ret));
+-#endif /* DHD_DEBUG */
+-	}
+-#endif /* _USI_NVRAM_FILE */
+ 	if (len > 0 && len < MAX_NVRAMBUF_SIZE) {
+ 		bufp = (char *)memblock;
+ 		bufp[len] = 0;

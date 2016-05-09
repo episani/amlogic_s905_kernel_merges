@@ -1,0 +1,25 @@
+#
+# Amlogic NAND device configuration
+#
+
+menuconfig AML_NAND
+	bool "Meson NAND Device Support(For NEXT GEN NAND DRIV)"
+	default n
+	help
+	  Amlogic nand drvier support.
+	  when it is Y here, we use aml nand driver, need choice below;
+	  when it is n here, need not other choice,we do not use aml nand
+	  driver.
+
+if	AML_NAND
+
+config AML_NFTL_NEW
+	tristate "Meson NAND flash new nftl"
+	default m
+	help
+	  Support for NAND flash
+	  on Amlogic Meson platforms
+	  for Next nftl
+	  here
+endif
+

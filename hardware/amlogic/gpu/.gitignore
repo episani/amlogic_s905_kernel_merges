@@ -1,0 +1,8 @@
+mali/__malidrv_build_info.c
+*.o
+*.cmd
+*.ko
+*.mod.c
+modules.order
+Module.symvers
+.tmp_versions

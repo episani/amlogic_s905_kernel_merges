@@ -1,0 +1,17 @@
+aml_nftl_dev-objs =
+aml_nftl_dev-objs += block/aml_nftl_block.o
+aml_nftl_dev-objs += block/aml_nftl_init.o
+aml_nftl_dev-objs += block/aml_nftl_hw_interface.o
+#obj-$(CONFIG_AML_NFTL_NEW)	+= block/
+#obj-$(CONFIG_AML_NFTL_NEW)	+= nftl/
+aml_nftl_dev-objs += ../../../../../../../../../../hardware/amlogic/nand/nand/aml_nftl_new/nftl/aml_nftl_core_140322b.z
+#aml_nftl_dev-objs += nftl/aml_nftl_phy.o
+#aml_nftl_dev-objs += nftl/aml_nftl_list.o
+#aml_nftl_dev-objs += nftl/aml_nftl_logic.o
+#aml_nftl_dev-objs += nftl/aml_nftl_gc.o
+#aml_nftl_dev-objs += nftl/aml_nftl_cache.o
+#aml_nftl_dev-objs += nftl/aml_nftl_common.o
+#aml_nftl_dev-objs += nftl/aml_nftl_create_list.o
+#aml_nftl_dev-objs += nftl/aml_nftl_start.o
+#aml_nftl_dev-objs += nftl/aml_nftl_interface.o
+obj-$(CONFIG_AML_NFTL_NEW)	+= aml_nftl_dev.o

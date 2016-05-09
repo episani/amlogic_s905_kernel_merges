@@ -1,0 +1,14 @@
+#
+# Amlogic NAND device configuration
+#
+
+menu "Meson NAND Device Support"
+
+config AML_NFTL_MODULES
+	tristate "Meson NAND NEW_FTL DEV support"
+	default n
+	help
+	  Support NAND Flash New Translation Layer
+
+endmenu
+        
